@@ -41,11 +41,13 @@ and requires the following inputs:
 
 .. code-block:: python
 
-	filename = '/Volumes/easystore/noagn/snap_m50n512_105.hdf5'
-	projection_direction = 'x'
+	filename = 'snap_m50n512_105.hdf5'
+	projection_direction = 'x' 
 	output_name = 'noagn_x_szy.npy' 
-	frb = 1820
 	z = 0.9927 
+	theta = 2.5
+	comov =3289.7*1000   #Calculate with https://www.astro.ucla.edu/~wright/CosmoCalc.html
+	frb=determining_frb_size(50, z, comov, theta) 
 
 - **filename** - Path and name of snapshot for analysis. Must be .hdf5 format
 - **projection_direction** - ‘x’, ‘y’, or ‘z’. It is reccomended that each snapshot is projected in all three directions. Each projection is then treated as a separate 
@@ -53,14 +55,15 @@ map with a separate galaxy sample. This is not required, as the statistical legi
 tSZ is not expected to be different for different projections while looking within the radius of the galaxy, at larger radii there is no significant spherical symmetry.
 - **output_name** - Name of the .npy file containing the projected Compton-y map. This name MUST END with _szy.npy and it is reccomended that the direction of projection 
 is included as shown above.
-- **frb** - The number of pixels on each side for a generated fixed resolution buffer. The choice of this value depends on the resolution of data you are 
-generating/comparing against and the resolution of your simulation.
 - **z** - redshift corresponding to the snapshot. Deriving the Compton-y parameter from pressure fields as done here is redshift dependent.
+- **theta** - Angular resolution you want your frb to have
+- **comov** - Comoving distance corresponding to the redshift of your snapshot. Suggested that you calculate this `here <https://www.astro.ucla.edu/~wright/CosmoCalc.html>`_
+- **frb** - The number of pixels on each side for a generated fixed resolution buffer. This calculated for you with the ``Generating_SZ_Data.determining_frb_size()`` function. 
+
 
 **Step Two: Extracting Galaxy Information**
 
-Here, we load the CAESAR file and extract key characteristics of the galaxies, such as stellar mass, halo mass, and age. Aside from the path to the file, there is only 
-one key component that must be changed here, and that is a conversion factor between CAESAR's units (comoving kpc) and the pixel size of the frb you chose above. 
+Here, we load the CAESAR file and extract key characteristics of the galaxies, such as stellar mass, halo mass, and age. Aside from the path to the file, there is only one key component that must be changed here, and that is a conversion factor between CAESAR's units (comoving kpc) and the pixel size of the frb you chose above. This conversion factor is calculated using the ``Generating_SZ_Data.determining_caesar_conversion()`` function. 
 
 
 **Step Three: Data Analysis**
