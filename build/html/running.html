@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Running RAFIKI &#8212; RAFIKI 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RAFIKI Outputs" href="outputs.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="running-rafiki">
+<h1>Running RAFIKI<a class="headerlink" href="#running-rafiki" title="Permalink to this headline">¶</a></h1>
+<p>RAFIKI allows for a range of analyses and is thus run in a series of steps requiring a minimum amount of user input. RAFIKI can be run in command line via its .py
+files or Jupyter notebook. In order to identify galaxies and conduct analysis for different populations, it is necessary that you have a CAESAR output file for each snapshot. Some
+simulations, such as Simba provide these Caesar files along with the snapshots. You can also run CAESAR yourself, following the instructions <a class="reference external" href="https://caesar.readthedocs.io/en/latest/">here</a></p>
+<p>Once you have your snapshot output (in hdf5 format) and CAESAR galaxy/halo catalog, the process of running RAFIKI is done in two steps:</p>
+<p>Generating and Analyzing tSZ Map (see analysis_example.ipynb)</p>
+<p>Stacking and Visualizing Data (see stacking_example.ipynb)</p>
+<p>Here we walk through the general steps of these processes. For more detailed information on the code structure and functions used, see</p>
+<section id="generating-and-analyzing-tsz-map">
+<h2>Generating and Analyzing tSZ Map<a class="headerlink" href="#generating-and-analyzing-tsz-map" title="Permalink to this headline">¶</a></h2>
+<p>There are three steps in the process of analyzing tSZ data, as walked through in analysis_example.ipynb. Those are:</p>
+<ol class="arabic simple">
+<li><p>Creating a projected map of the Compton-y parameter</p></li>
+<li><p>Extracting galaxy sample information</p></li>
+<li><p>Extracting data around galaxies to generate results</p></li>
+</ol>
+<p>There are three main results RAFIKI is equipped to produce:</p>
+<ol class="arabic simple">
+<li><p>Radial profiles of the Compton-y signal</p></li>
+<li><p>Radial profiles of moments of asymmetry</p></li>
+<li><p>Thermal energy measurements</p></li>
+</ol>
+<p>The example notebook shows how to conduct all three analyzes, which generates a series of .csv files which are described in <a class="reference internal" href="outputs.html"><span class="doc">RAFIKI Outputs</span></a></p>
+<p>There are several key parameters that need to be adjusted, as described briefly in the notebook and more extensively here</p>
+<p><strong>Step One: Creating a Projected Map</strong></p>
+<p>The first stage of analysis is generating a map of the Compton-y parameter projected along the snapshot box. This converts the particle data to a two-dimensional
+pixelated map of the Compton-y parameter, defined as <span class="math notranslate nohighlight">\(y = \sigma_T \int dl \ n_e \frac{k(T_e-T_{CMB})}{m_e c^2}\)</span> This is done via the generating_sz_data function
+and requires the following inputs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;/Volumes/easystore/noagn/snap_m50n512_105.hdf5&#39;</span>
+<span class="n">projection_direction</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
+<span class="n">output_name</span> <span class="o">=</span> <span class="s1">&#39;noagn_x_szy.npy&#39;</span>
+<span class="n">frb</span> <span class="o">=</span> <span class="mi">1820</span>
+<span class="n">z</span> <span class="o">=</span> <span class="mf">0.9927</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>filename</strong> - Path and name of snapshot for analysis. Must be .hdf5 format</p></li>
+<li><p><strong>projection_direction</strong> - ‘x’, ‘y’, or ‘z’. It is reccomended that each snapshot is projected in all three directions. Each projection is then treated as a separate</p></li>
+</ul>
+<p>map with a separate galaxy sample. This is not required, as the statistical legitimacy of this process depends on the radius around the galaxies you are interested in. While the
+tSZ is not expected to be different for different projections while looking within the radius of the galaxy, at larger radii there is no significant spherical symmetry.
+- <strong>output_name</strong> - Name of the .npy file containing the projected Compton-y map. This name MUST END with _szy.npy and it is reccomended that the direction of projection
+is included as shown above.
+- <strong>frb</strong> - The number of pixels on each side for a generated fixed resolution buffer. The choice of this value depends on the resolution of data you are
+generating/comparing against and the resolution of your simulation.
+- <strong>z</strong> - redshift corresponding to the snapshot. Deriving the Compton-y parameter from pressure fields as done here is redshift dependent.</p>
+<p><strong>Step Two: Extracting Galaxy Information</strong></p>
+<p>Here, we load the CAESAR file and extract key characteristics of the galaxies, such as stellar mass, halo mass, and age. Aside from the path to the file, there is only
+one key component that must be changed here, and that is a conversion factor between CAESAR’s units (comoving kpc) and the pixel size of the frb you chose above.</p>
+<p><strong>Step Three: Data Analysis</strong></p>
+<p>Now we get to the good part. The final inputs set what results we want from RAFIKI, with the following inputs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sz_dat_path</span> <span class="o">=</span> <span class="s1">&#39;noagn_&#39;</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="s1">&#39;rpmpte&#39;</span>
+<span class="n">low_sm</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">width</span> <span class="o">=</span> <span class="mi">300</span>
+<span class="n">beam_kernel</span> <span class="o">=</span> <span class="mf">1.68</span>
+<span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;example&#39;</span>
+<span class="n">aperature</span> <span class="o">=</span> <span class="mi">50</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>sz_dat_path</strong>: where is the .npy file generated above? Here we put the path to the file as well as the name, but without the suffix including the projection</p></li>
+</ul>
+<p>direction. This is to allow for the loop shown in the notebook to consider all three projections as one big data set.</p>
+<ul class="simple">
+<li><p><strong>analysis</strong>: What analysis would you like to run? - RAFIKI is equipped to calculate three things from the tSZ data. The first is simply radial profiles of the</p></li>
+</ul>
+<p>Compton-y signal around each galaxy in your sample. If you would like this data, input rp. It can also generate radial profiles for the moments of symmetry for each galaxy. By default it will
+output moments 0, 1, and 2. If you would like this data, input mp. Finally, the tSZ values can be used to calculate the total thermal energy within a given radius around
+your galaxies. If you choose this option, you will be asked later on for the radius of the aperture you would like, in terms of pixels. If you would like this data, input
+te. You may choose any combination of these, and in the example above all three analyses will be conducted.</p>
+<ul class="simple">
+<li><p><strong>low_sm</strong>: Minimum stellar mass for your sample - In order to speed up the analysis process, if you know you are only interested in large galaxies you may make a lower</p></li>
+</ul>
+<p>cut with this variable. Particularly at high redshifts, where only the most massive galaxies are visible, it is suggested to make a cut similar to the 1e11 shown above. This value must
+have units of solar masses.</p>
+<ul class="simple">
+<li><p><strong>width</strong>: Pixel length of box you want to cut around each galaxy - Particularly relevant for the radial profile analyses, this input determines how far out from each</p></li>
+</ul>
+<p>galaxy you want to study. Note this is the length of the side of a stamp around the galaxy, not a radius of a circular aperature. Also note this is in terms of pixels, so make sure
+you have a good understanding of the relationship between the pixel size and physical or angular units.</p>
+<ul class="simple">
+<li><p><strong>beam_kernel</strong>: Standard deviation of Gaussian kernel - A key element of RAFIKI is the ability to compare against observational data by convolving with a variety of</p></li>
+</ul>
+<p>beam sizes. In its current form, RAFIKI only convolves with a Gaussian beam, and this input determines the standard deviation of that beam (in terms of pixels).</p>
+<ul class="simple">
+<li><p><strong>label</strong>: Output Label - String added to each output file. The outputs are described more in detail in OUTPUTS.</p></li>
+<li><p><strong>aperature</strong>: Size of region for thermal energy measurements - Thermal energy is calculated in a circular aperature around each galaxy. Here, you set the radius of</p></li>
+</ul>
+<p>that aperature in pixels.</p>
+</section>
+<section id="stacking-and-visualizing-data">
+<h2>Stacking and Visualizing Data<a class="headerlink" href="#stacking-and-visualizing-data" title="Permalink to this headline">¶</a></h2>
+<p>The file stacking_example.ipynb shows how to take the csv files generated above and stack the data around a galaxy sample of your choice, creating plots. Once again, you
+can chose if you want radial profiles, moments, or thermal energy data. One key place for user input comes in specifying the galaxy sample. Where above, we set a lower
+limit on the stellar mass to reduce computational time, we now set full constraints.</p>
+<p>stacking_example.ipynb generates a sample with stellar masses larger than 1e11, ages above 1 Gyr, and SSFR less than 0.01, a way of selecting quiescent galaxies.</p>
+<p>This notebook both generates plots and csv files containing the plot data. Errors are calculated using a bootstrapping method.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">RAFIKI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Running RAFIKI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generating-and-analyzing-tsz-map">Generating and Analyzing tSZ Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stacking-and-visualizing-data">Stacking and Visualizing Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">RAFIKI Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Code Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+      <li>Next: <a href="outputs.html" title="next chapter">RAFIKI Outputs</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, S Grayson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/running.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

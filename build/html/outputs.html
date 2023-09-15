@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>RAFIKI Outputs &#8212; RAFIKI 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Code Reference" href="reference.html" />
+    <link rel="prev" title="Running RAFIKI" href="running.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="rafiki-outputs">
+<h1>RAFIKI Outputs<a class="headerlink" href="#rafiki-outputs" title="Permalink to this headline">¶</a></h1>
+<p>At various stages in running RAFIKI, output files will be generated. Nearly all will be csv files and their data is explained here ([label] indicates a user input label
+chosen when running. For more details, see <a class="reference internal" href="running.html"><span class="doc">Running RAFIKI</span></a>).</p>
+<p><strong>[label]_szy.npy</strong> - Output of Generating_SZ_Data.py. Image data of the projected map of the Compton-y parameter.</p>
+<p><strong>galaxy_sample_[label].csv</strong> - Contains properties of your galaxy sample. Data is output in five columns:
+Stellar Mass, Halo Mass, R200, Age, SFR. Retaining the order of this csv is very important, as it is the same as
+the files below.</p>
+<p><strong>radial_[label].csv</strong> - Radial profile of Compton-y signal around each galaxy</p>
+<p><strong>m_0_[label].csv</strong> - Radial profile of the zeroth moment around each galaxy</p>
+<p><strong>m_1_[label].csv</strong> - Radial profile of the first moment around each galaxy</p>
+<p><strong>m_2_[label].csv</strong> - Radial profile of the second moment around each galaxy</p>
+<p><strong>thermal_energy_[label].csv</strong> - Thermal energy within the radius specified when running around each galaxy</p>
+<p>You should never need to directly deal with any of these outputs, as they will go directly into the stacking and
+visualization process. The outputs of that process will be more useful and are as follows:</p>
+<p><strong>stacked_radial_profiles_[label].csv</strong> - Radial profile of stacked galaxies. Columns are radius (arcmin), Compton-y signal, and y-error</p>
+<p><strong>stacked_moment_profiles_[label.csv</strong> - Radial profile of the moments of stacked galaxies. Columns are radius (arcmin), ratio of M1/M0, the y-error of that, ratio of
+M2/M0, and y-error of that</p>
+<p><strong>thermal_energy_plots_[label].csv</strong> - Thermal energy against mass plot data. Columns are stellar mass bins, thermal energy in each bin, error, halo mass bins, thermal
+energy in each bin, error.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">RAFIKI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running RAFIKI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RAFIKI Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Code Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="running.html" title="previous chapter">Running RAFIKI</a></li>
+      <li>Next: <a href="reference.html" title="next chapter">Code Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, S Grayson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/outputs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
