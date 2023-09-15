@@ -5,6 +5,8 @@ RAFIKI (Realizing AGN Feedback in Keyframe Images) is an open-source python pack
 simulated microwave and X-ray data. In its current form, it can be used to generate and stack tSZ images
 from raw hdf5 files from SIMBA or any other GIZMO-based code.
 
+This directory contains both the scripts used for analysis and the files that generate documentation, located in the source and build directories
+
 Features
 --------
 -Create stacked images of Compton-y parameter around galaxies with properties of your choosings
