@@ -5,8 +5,11 @@ Here you will find reference to the specific functions used in the RAFIKI pacakg
 cutting particles, and creating a projected map of the tSZ signal in your box, and functions.py which contains all the functions relevant for analysis. Below we summarize 
 the role of each function as well as its inputs and outputs. 
 
+..autofunction:: Generating_SZ_Data.determining_frb_size
 
 .. autofunction:: Generating_SZ_Data.generating_sz_data
+
+..autofunction:: Generating_SZ_Data.determinging_caesar_conversion
 
 .. autofunction:: functions.sorting
 
