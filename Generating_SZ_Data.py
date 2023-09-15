@@ -21,7 +21,7 @@ You shouldn't need to adjust below this line
 '''
 
 
-def determing_frb_size(box_size, z, comov, angular_res):
+def determining_frb_size(box_size, z, comov, angular_res):
     '''
     Tells you how many pixels you want in your image for a given angular resolution
 
