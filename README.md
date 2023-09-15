@@ -8,7 +8,9 @@ from raw hdf5 files from SIMBA or any other GIZMO-based code.
 Features
 --------
 -Create stacked images of Compton-y parameter around galaxies with properties of your choosings
+
 -Generate radial profiles of the Compton-y parameter and moment analyses of asymmetries
+
 -Calculate the total thermal energy in an aperature of your choosing and plot against stellar or halo mass
 
 
