@@ -18,7 +18,28 @@ import pandas as pd
 You shouldn't need to adjust below this line
 -------------------------------------------------------------
 '''
+def determing_frb_size(box_size, z, comov, angular_res):
+    '''
+    Tells you how many pixels you want in your image for a given angular resolution
 
+    :param box_size: Size of the box in units of Mpc/h 
+    :type box_size: float
+    :param z: redshift of your snapshot
+    :type z: float
+    :param comov: Comoving distance in kpc. Suggested to use Ned Wright's cosmology calculator to determine
+    :type comov: float
+    :param angular_res: The angular size of each pixel you want in your frb in units of arcseconds
+    :type angular_res: float
+    :return: How many pixels you want to make your frb to achieve the desired angular resolution
+    :rtype: int
+    '''
+
+    physical_size = box_size/(1+z)/0.68 #Assuming h = 0.68
+    #convert resolution to radians and multiply by comoving distance/(1+z) to get physical size of pixel
+    pixel = comov*angular_res*(4.84814*10**(-6))/(1+z) 
+    frb = physical_size*1000/pixel
+    return math.ceil(frb)
+    
 def generating_sz_data(filename, projection_direction, output_name, frb, redshift):
     '''
     Cuts ISM and current wind particles, makes a new field of gas pressure, projects this field in the specified direction, and saves a file containing the projected map of the tSZ signal
