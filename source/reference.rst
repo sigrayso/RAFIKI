@@ -9,7 +9,7 @@ the role of each function as well as its inputs and outputs.
 
 .. autofunction:: Generating_SZ_Data.generating_sz_data
 
-.. autofunction:: Generating_SZ_Data.determinging_caesar_conversion
+.. autofunction:: Generating_SZ_Data.determining_caesar_conversion
 
 .. autofunction:: functions.sorting
 
