@@ -35,9 +35,7 @@ There are several key parameters that need to be adjusted, as described briefly 
 
 **Step One: Creating a Projected Map**
 
-The first stage of analysis is generating a map of the Compton-y parameter projected along the snapshot box. This converts the particle data to a two-dimensional 
-pixelated map of the Compton-y parameter, defined as :math:`y = \sigma_T \int dl \ n_e \frac{k(T_e-T_{CMB})}{m_e c^2}` This is done via the generating_sz_data function 
-and requires the following inputs: 
+The first stage of analysis is generating a map of the Compton-y parameter projected along the snapshot box. This converts the particle data to a two-dimensional pixelated map of the Compton-y parameter, defined as :math:`y = \sigma_T \int dl \ n_e \frac{k(T_e-T_{CMB})}{m_e c^2}` This is done via the generating_sz_data function and requires the following inputs: 
 
 .. code-block:: python
 
@@ -50,11 +48,8 @@ and requires the following inputs:
 	frb=determining_frb_size(50, z, comov, theta) 
 
 - **filename** - Path and name of snapshot for analysis. Must be .hdf5 format
-- **projection_direction** - ‘x’, ‘y’, or ‘z’. It is reccomended that each snapshot is projected in all three directions. Each projection is then treated as a separate 
-map with a separate galaxy sample. This is not required, as the statistical legitimacy of this process depends on the radius around the galaxies you are interested in. While the 
-tSZ is not expected to be different for different projections while looking within the radius of the galaxy, at larger radii there is no significant spherical symmetry.
-- **output_name** - Name of the .npy file containing the projected Compton-y map. This name MUST END with _szy.npy and it is reccomended that the direction of projection 
-is included as shown above.
+- **projection_direction** - ‘x’, ‘y’, or ‘z’. It is reccomended that each snapshot is projected in all three directions. Each projection is then treated as a separate map with a separate galaxy sample. This is not required, as the statistical legitimacy of this process depends on the radius around the galaxies you are interested in. While the tSZ is not expected to be different for different projections while looking within the radius of the galaxy, at larger radii there is no significant spherical symmetry.
+- **output_name** - Name of the .npy file containing the projected Compton-y map. This name MUST END with _szy.npy and it is reccomended that the direction of projection is included as shown above.
 - **z** - redshift corresponding to the snapshot. Deriving the Compton-y parameter from pressure fields as done here is redshift dependent.
 - **theta** - Angular resolution you want your frb to have
 - **comov** - Comoving distance corresponding to the redshift of your snapshot. Suggested that you calculate this `here <https://www.astro.ucla.edu/~wright/CosmoCalc.html>`_
